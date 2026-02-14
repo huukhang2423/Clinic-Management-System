@@ -5,6 +5,7 @@ import PatientMedications from './PatientMedications';
 import AutocompleteInput from '../ui/AutocompleteInput';
 import { useToast } from '../../context/ToastContext';
 import { GENDER_OPTIONS } from '../../utils/constants';
+import { getNameSuggestions } from '../../utils/vietnameseNames';
 
 export default function PatientForm() {
   const { id } = useParams();
@@ -98,9 +99,8 @@ export default function PatientForm() {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const fetchNameSuggestions = useCallback(async (query) => {
-    const res = await patientService.getNames(query);
-    return res.data.data;
+  const nameSuggestions = useCallback((query) => {
+    return getNameSuggestions(query);
   }, []);
 
   return (
@@ -115,7 +115,7 @@ export default function PatientForm() {
             <AutocompleteInput
               value={form.name}
               onChange={(val) => handleChange('name', val)}
-              fetchSuggestions={fetchNameSuggestions}
+              getSuggestions={nameSuggestions}
               placeholder="Nhập họ tên bệnh nhân"
               className={`w-full px-3 py-2.5 border rounded-lg outline-none text-sm ${
                 errors.name ? 'border-red-500' : 'border-gray-300'

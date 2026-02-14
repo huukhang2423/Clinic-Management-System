@@ -3,16 +3,14 @@ import { useState, useEffect, useRef } from 'react';
 export default function AutocompleteInput({
   value,
   onChange,
-  fetchSuggestions,
+  getSuggestions,
   placeholder,
   className,
-  error,
 }) {
   const [suggestions, setSuggestions] = useState([]);
   const [show, setShow] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const wrapperRef = useRef(null);
-  const timerRef = useRef(null);
 
   useEffect(() => {
     if (!value || value.length < 1) {
@@ -21,25 +19,14 @@ export default function AutocompleteInput({
       return;
     }
 
-    clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(async () => {
-      try {
-        const results = await fetchSuggestions(value);
-        // Filter out exact match
-        const filtered = results.filter(
-          (s) => s.toLowerCase() !== value.toLowerCase()
-        );
-        setSuggestions(filtered);
-        setShow(filtered.length > 0);
-        setActiveIndex(-1);
-      } catch {
-        setSuggestions([]);
-        setShow(false);
-      }
-    }, 200);
-
-    return () => clearTimeout(timerRef.current);
-  }, [value, fetchSuggestions]);
+    const results = getSuggestions(value);
+    const filtered = results.filter(
+      (s) => s.toLowerCase() !== value.toLowerCase()
+    );
+    setSuggestions(filtered);
+    setShow(filtered.length > 0);
+    setActiveIndex(-1);
+  }, [value, getSuggestions]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -73,6 +60,27 @@ export default function AutocompleteInput({
     }
   };
 
+  // Highlight the matching part of the suggestion
+  const highlightMatch = (suggestion) => {
+    const lower = suggestion.toLowerCase();
+    const queryLower = value.toLowerCase().trimEnd();
+    const idx = lower.indexOf(queryLower);
+
+    if (idx === -1) return suggestion;
+
+    const before = suggestion.slice(0, idx);
+    const match = suggestion.slice(idx, idx + queryLower.length);
+    const after = suggestion.slice(idx + queryLower.length);
+
+    return (
+      <>
+        {before}
+        <span className="font-semibold text-blue-700">{match}</span>
+        {after}
+      </>
+    );
+  };
+
   return (
     <div ref={wrapperRef} className="relative">
       <input
@@ -97,7 +105,7 @@ export default function AutocompleteInput({
                   : 'hover:bg-gray-50 text-gray-800'
               }`}
             >
-              {name}
+              {highlightMatch(name)}
             </li>
           ))}
         </ul>
