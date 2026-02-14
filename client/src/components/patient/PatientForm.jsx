@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import patientService from '../../services/patientService';
 import PatientMedications from './PatientMedications';
+import AutocompleteInput from '../ui/AutocompleteInput';
 import { useToast } from '../../context/ToastContext';
 import { GENDER_OPTIONS } from '../../utils/constants';
 
@@ -97,6 +98,11 @@ export default function PatientForm() {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
+  const fetchNameSuggestions = useCallback(async (query) => {
+    const res = await patientService.getNames(query);
+    return res.data.data;
+  }, []);
+
   return (
     <div>
       <h1 className="text-xl font-bold mb-4">
@@ -106,14 +112,14 @@ export default function PatientForm() {
         <div className="grid gap-4 md:grid-cols-2">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Họ tên *</label>
-            <input
-              type="text"
+            <AutocompleteInput
               value={form.name}
-              onChange={(e) => handleChange('name', e.target.value)}
+              onChange={(val) => handleChange('name', val)}
+              fetchSuggestions={fetchNameSuggestions}
+              placeholder="Nhập họ tên bệnh nhân"
               className={`w-full px-3 py-2.5 border rounded-lg outline-none text-sm ${
                 errors.name ? 'border-red-500' : 'border-gray-300'
               } focus:ring-2 focus:ring-blue-500`}
-              placeholder="Nhập họ tên bệnh nhân"
             />
             {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
           </div>

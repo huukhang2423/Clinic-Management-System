@@ -4,6 +4,25 @@ import Patient from '../models/Patient.js';
 const POPULATE_VISITS = 'visits.medications.medication';
 const POPULATE_FIELDS = 'name effects';
 
+// @desc    Get patient name suggestions for autocomplete
+// @route   GET /api/patients/names
+export const getPatientNames = asyncHandler(async (req, res) => {
+  const { q } = req.query;
+  if (!q || q.length < 1) {
+    return res.json({ success: true, data: [] });
+  }
+
+  const regex = new RegExp(q, 'i');
+  const patients = await Patient.find({ name: regex })
+    .select('name')
+    .limit(10)
+    .lean();
+
+  // Extract unique names
+  const names = [...new Set(patients.map((p) => p.name))];
+  res.json({ success: true, data: names });
+});
+
 // @desc    Get all patients
 // @route   GET /api/patients
 export const getPatients = asyncHandler(async (req, res) => {
