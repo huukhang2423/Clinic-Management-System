@@ -4,6 +4,7 @@ import patientService from '../../services/patientService';
 import PatientMedications from './PatientMedications';
 import AutocompleteInput from '../ui/AutocompleteInput';
 import { useToast } from '../../context/ToastContext';
+import { usePrescription } from '../../context/PrescriptionNotificationContext';
 import { GENDER_OPTIONS } from '../../utils/constants';
 import { getNameSuggestions } from '../../utils/vietnameseNames';
 
@@ -11,6 +12,7 @@ export default function PatientForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { showPrescription } = usePrescription();
   const isEdit = Boolean(id);
 
   const [form, setForm] = useState({
@@ -86,6 +88,14 @@ export default function PatientForm() {
         };
         await patientService.create(payload);
         showToast('Thêm bệnh nhân thành công');
+        showPrescription({
+          patientName: form.name,
+          diagnosis: form.diagnosis,
+          medications: medications.map((m) => ({
+            name: m.medicationData?.name || '',
+            dosage: m.dosage,
+          })),
+        });
       }
       navigate('/benh-nhan');
     } catch (err) {

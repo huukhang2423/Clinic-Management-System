@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router';
 import { ToastProvider } from './context/ToastContext';
+import { PrescriptionNotificationProvider } from './context/PrescriptionNotificationContext';
 import Layout from './components/layout/Layout';
 import HomePage from './pages/HomePage';
 import MedicationPage from './pages/MedicationPage';
@@ -12,6 +13,7 @@ import NotFoundPage from './pages/NotFoundPage';
 function App() {
   return (
     <ToastProvider>
+      <PrescriptionNotificationProvider>
       <BrowserRouter>
         <Routes>
           <Route element={<Layout />}>
@@ -27,6 +29,7 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
+      </PrescriptionNotificationProvider>
     </ToastProvider>
   );
 }
