@@ -5,11 +5,13 @@ import { formatDate, formatDateTime } from '../../utils/formatDate';
 import Modal from '../ui/Modal';
 import PatientMedications from './PatientMedications';
 import { useToast } from '../../context/ToastContext';
+import { usePrescription } from '../../context/PrescriptionNotificationContext';
 
 export default function PatientDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { showPrescription } = usePrescription();
   const [patient, setPatient] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -50,6 +52,14 @@ export default function PatientDetail() {
       });
       setPatient(res.data.data);
       setShowVisitForm(false);
+      showPrescription({
+        patientName: patient.name,
+        diagnosis: visitDiagnosis,
+        medications: visitMedications.map((m) => ({
+          name: m.medicationData?.name || '',
+          dosage: m.dosage,
+        })),
+      });
       setVisitDiagnosis('');
       setVisitMedications([]);
       showToast('Thêm lượt khám thành công');
