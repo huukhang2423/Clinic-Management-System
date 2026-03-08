@@ -47,9 +47,9 @@ export const getPatient = asyncHandler(async (req, res) => {
 // @desc    Create patient
 // @route   POST /api/patients
 export const createPatient = asyncHandler(async (req, res) => {
-  const { name, dateOfBirth, gender, address, phone, diagnosis, medications } = req.body;
+  const { name, dateOfBirth, gender, address, phone, cccd, diagnosis, medications } = req.body;
 
-  const patientData = { name, dateOfBirth, gender, address, phone, visits: [] };
+  const patientData = { name, dateOfBirth, gender, address, phone, cccd, visits: [] };
 
   // If diagnosis or medications provided, create the first visit
   if (diagnosis || (medications && medications.length > 0)) {
@@ -68,11 +68,11 @@ export const createPatient = asyncHandler(async (req, res) => {
 // @desc    Update patient info (name, dob, gender, address, phone)
 // @route   PUT /api/patients/:id
 export const updatePatient = asyncHandler(async (req, res) => {
-  const { name, dateOfBirth, gender, address, phone } = req.body;
+  const { name, dateOfBirth, gender, address, phone, cccd } = req.body;
 
   const patient = await Patient.findByIdAndUpdate(
     req.params.id,
-    { name, dateOfBirth, gender, address, phone },
+    { name, dateOfBirth, gender, address, phone, cccd },
     { new: true, runValidators: true }
   ).populate(POPULATE_VISITS, POPULATE_FIELDS);
 
