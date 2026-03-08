@@ -59,6 +59,12 @@ const patientSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Số điện thoại là bắt buộc'],
       trim: true,
+      match: [/^\d{10}$/, 'Số điện thoại phải có đúng 10 chữ số'],
+    },
+    cccd: {
+      type: String,
+      trim: true,
+      match: [/^\d{12}$/, 'Số CCCD phải có đúng 12 chữ số'],
     },
     visits: [visitSchema],
   },

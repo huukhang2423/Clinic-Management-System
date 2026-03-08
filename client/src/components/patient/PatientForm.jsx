@@ -21,6 +21,7 @@ export default function PatientForm() {
     gender: 'Nam',
     address: '',
     phone: '',
+    cccd: '',
     diagnosis: '',
   });
   const [medications, setMedications] = useState([]);
@@ -37,6 +38,7 @@ export default function PatientForm() {
           gender: p.gender,
           address: p.address || '',
           phone: p.phone,
+          cccd: p.cccd || '',
           diagnosis: '',
         });
       }).catch(() => {
@@ -51,6 +53,8 @@ export default function PatientForm() {
     if (!form.name.trim()) errs.name = 'Tên bệnh nhân là bắt buộc';
     if (!form.dateOfBirth) errs.dateOfBirth = 'Ngày sinh là bắt buộc';
     if (!form.phone.trim()) errs.phone = 'Số điện thoại là bắt buộc';
+    else if (!/^\d{10}$/.test(form.phone)) errs.phone = 'Số điện thoại phải có đúng 10 chữ số';
+    if (form.cccd && !/^\d{12}$/.test(form.cccd)) errs.cccd = 'Số CCCD phải có đúng 12 chữ số';
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -70,6 +74,7 @@ export default function PatientForm() {
           gender: form.gender,
           address: form.address,
           phone: form.phone,
+          cccd: form.cccd,
         });
         showToast('Cập nhật thông tin thành công');
       } else {
@@ -80,6 +85,7 @@ export default function PatientForm() {
           gender: form.gender,
           address: form.address,
           phone: form.phone,
+          cccd: form.cccd,
           diagnosis: form.diagnosis,
           medications: medications.map((m) => ({
             medication: m.medication,
@@ -167,13 +173,35 @@ export default function PatientForm() {
             <input
               type="tel"
               value={form.phone}
-              onChange={(e) => handleChange('phone', e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                handleChange('phone', val);
+              }}
               className={`w-full px-3 py-2.5 border rounded-lg outline-none text-sm ${
                 errors.phone ? 'border-red-500' : 'border-gray-300'
               } focus:ring-2 focus:ring-blue-500`}
-              placeholder="Nhập số điện thoại"
+              placeholder="Nhập số điện thoại (10 số)"
+              maxLength={10}
             />
             {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Số CCCD</label>
+            <input
+              type="text"
+              value={form.cccd}
+              onChange={(e) => {
+                const val = e.target.value.replace(/\D/g, '').slice(0, 12);
+                handleChange('cccd', val);
+              }}
+              className={`w-full px-3 py-2.5 border rounded-lg outline-none text-sm ${
+                errors.cccd ? 'border-red-500' : 'border-gray-300'
+              } focus:ring-2 focus:ring-blue-500`}
+              placeholder="Nhập số căn cước (12 số)"
+              maxLength={12}
+            />
+            {errors.cccd && <p className="text-red-500 text-xs mt-1">{errors.cccd}</p>}
           </div>
         </div>
 

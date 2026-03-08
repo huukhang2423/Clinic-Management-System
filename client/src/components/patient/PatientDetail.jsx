@@ -95,6 +95,7 @@ export default function PatientDetail() {
           <InfoRow label="Ngày sinh" value={formatDate(patient.dateOfBirth)} />
           <InfoRow label="Giới tính" value={patient.gender} />
           <InfoRow label="Số điện thoại" value={patient.phone} />
+          <InfoRow label="Số CCCD" value={patient.cccd || '—'} />
           <InfoRow label="Địa chỉ" value={patient.address || '—'} className="md:col-span-2" />
           <InfoRow label="Ngày tạo hồ sơ" value={formatDateTime(patient.createdAt)} />
           <InfoRow
