@@ -180,7 +180,7 @@ export default function PatientForm() {
               className={`w-full px-3 py-2.5 border rounded-lg outline-none text-sm ${
                 errors.phone ? 'border-red-500' : 'border-gray-300'
               } focus:ring-2 focus:ring-blue-500`}
-              placeholder="Nhập số điện thoại (10 số)"
+              placeholder="Nhập số điện thoại"
               maxLength={10}
             />
             {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
@@ -198,7 +198,7 @@ export default function PatientForm() {
               className={`w-full px-3 py-2.5 border rounded-lg outline-none text-sm ${
                 errors.cccd ? 'border-red-500' : 'border-gray-300'
               } focus:ring-2 focus:ring-blue-500`}
-              placeholder="Nhập số căn cước (12 số)"
+              placeholder="Nhập số căn cước"
               maxLength={12}
             />
             {errors.cccd && <p className="text-red-500 text-xs mt-1">{errors.cccd}</p>}
